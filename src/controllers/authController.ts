@@ -9,7 +9,8 @@ const setAuthCookies = (res: Response, tokens: { accessToken: string; refreshTok
   const commonOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'lax' as const,
+    sameSite: 'none' as const,
+    path: '/',
   };
 
   res.cookie('accessToken', tokens.accessToken, {
