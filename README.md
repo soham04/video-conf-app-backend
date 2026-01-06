@@ -114,10 +114,6 @@ backend/
 4. Update environment variables
 5. Deploy:
 
-```bash
-gcloud app deploy
-```
-
 ## License
 
 ISC
