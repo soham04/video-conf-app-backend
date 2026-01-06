@@ -9,6 +9,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 
 import { connectDatabase } from './config/database';
+import cookieParser from 'cookie-parser';
 import { initializeSocketServer } from './services/socketService';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
@@ -34,6 +35,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Health check endpoint
 app.get('/health', (_req, res) => {

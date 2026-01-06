@@ -3,6 +3,31 @@ import { User } from '../models/User';
 import { generateTokens, verifyRefreshToken } from '../utils/jwt';
 import { AuthRequest } from '../types';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const setAuthCookies = (res: Response, tokens: { accessToken: string; refreshToken: string }) => {
+  const commonOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax' as const,
+  };
+
+  res.cookie('accessToken', tokens.accessToken, {
+    ...commonOptions,
+    maxAge: 1000 * 60 * 60, // 1 hour
+  });
+
+  res.cookie('refreshToken', tokens.refreshToken, {
+    ...commonOptions,
+    maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+  });
+};
+
+const clearAuthCookies = (res: Response) => {
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+};
+
 /**
  * Register or login user with Firebase Auth token
  * This endpoint will be called from frontend after Firebase authentication
@@ -40,6 +65,8 @@ export const authenticateWithFirebase = async (
     // Generate JWT tokens
     const tokens = generateTokens(user._id.toString(), user.email);
 
+    setAuthCookies(res, tokens);
+
     res.status(200).json({
       success: true,
       user: {
@@ -48,7 +75,6 @@ export const authenticateWithFirebase = async (
         email: user.email,
         photoURL: user.photoURL,
       },
-      ...tokens,
     });
   } catch (error) {
     console.error('Authentication error:', error);
@@ -64,7 +90,7 @@ export const refreshToken = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { refreshToken } = req.body;
+    const refreshToken = req.body.refreshToken || req.cookies?.refreshToken;
 
     if (!refreshToken) {
       res.status(400).json({ error: 'Refresh token required' });
@@ -81,10 +107,9 @@ export const refreshToken = async (
 
     const tokens = generateTokens(user._id.toString(), user.email);
 
-    res.status(200).json({
-      success: true,
-      ...tokens,
-    });
+    setAuthCookies(res, tokens);
+
+    res.status(200).json({ success: true });
   } catch (error) {
     res.status(401).json({ error: 'Invalid refresh token' });
   }
@@ -125,8 +150,7 @@ export const logout = async (
   res: Response
 ): Promise<void> => {
   try {
-    // In JWT-based auth, logout is primarily client-side
-    // But you can log the event or implement token blacklisting here
+    clearAuthCookies(res);
     res.status(200).json({
       success: true,
       message: 'Logged out successfully',

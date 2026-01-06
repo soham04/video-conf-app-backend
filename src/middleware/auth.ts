@@ -10,13 +10,14 @@ export const authenticate = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+    const cookieToken = (req as any).cookies?.accessToken;
+    const token = bearerToken || cookieToken;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       res.status(401).json({ error: 'No token provided' });
       return;
     }
-
-    const token = authHeader.substring(7);
 
     try {
       const decoded = verifyAccessToken(token);

@@ -44,12 +44,23 @@ export interface SocketUser {
   socketId: string;
 }
 
+export interface WebRTCSessionDescription {
+  type: "offer" | "answer";
+  sdp: string;
+}
+
+export interface WebRTCIceCandidate {
+  candidate: string;
+  sdpMid?: string;
+  sdpMLineIndex?: number;
+}
+
 export interface WebRTCMessage {
+  type?: "join" | "offer" | "answer" | "ice";
   uuid: string;
   displayName?: string;
   dest: string;
   room: string;
-  sdp?: RTCSessionDescriptionInit;
-  ice?: RTCIceCandidateInit;
+  sdp?: WebRTCSessionDescription;
+  ice?: WebRTCIceCandidate;
 }
-
