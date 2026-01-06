@@ -1,3 +1,13 @@
+declare module 'express';
+declare module 'socket.io';
+declare module 'jsonwebtoken';
+declare module 'bcryptjs';
+declare module 'compression';
+declare module 'cookie-parser';
+declare module 'cors';
+declare module 'helmet';
+declare module 'morgan';
+declare module 'uuid';
 import { Request } from 'express';
 
 export interface IUser {
