@@ -28,6 +28,10 @@ export interface IChat {
 export interface AuthRequest extends Request {
   user?: IUser;
   userId?: string;
+  body: Request['body'];
+  params: Request['params'];
+  headers: Request['headers'] & { authorization?: string };
+  cookies: Request['cookies'];
 }
 
 export interface JWTPayload {

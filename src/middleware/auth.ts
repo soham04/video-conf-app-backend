@@ -11,7 +11,7 @@ export const authenticate = async (
   try {
     const authHeader = req.headers.authorization;
     const bearerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
-    const cookieToken = (req as any).cookies?.accessToken;
+    const cookieToken = req.cookies?.accessToken;
     const token = bearerToken || cookieToken;
 
     if (!token) {

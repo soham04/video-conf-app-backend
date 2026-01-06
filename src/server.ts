@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Health check endpoint
-app.get('/health', (_req, res) => {
+app.get('/health', (_req: express.Request, res: express.Response) => {
   res.status(200).json({
     success: true,
     message: 'Server is running',
