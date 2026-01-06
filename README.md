@@ -106,6 +106,35 @@ backend/
 └── tsconfig.json
 ```
 
+## Deployment to Render
+
+### Render Configuration
+
+When deploying to Render, make sure to configure the following in your Render dashboard:
+
+1. **Root Directory**: Set to `backend` (if deploying from monorepo root)
+2. **Build Command**: `npm install && npm run build` (or just leave empty - Render will auto-detect)
+3. **Start Command**: `npm start`
+4. **Environment**: Node.js
+5. **Node Version**: 20.x or 22.x
+
+### Environment Variables
+
+Set these in your Render dashboard:
+- `PORT` - Will be automatically set by Render
+- `NODE_ENV=production`
+- `MONGODB_URI` - Your MongoDB connection string
+- `JWT_SECRET` - Your JWT secret key
+- `JWT_EXPIRES_IN=7d`
+- `FRONTEND_URL` - Your frontend URL
+- `APP_NAME=Callify`
+
+### Important Notes
+
+- Render automatically installs `devDependencies` when a `build` script exists
+- The build process compiles TypeScript from `src/` to `dist/`
+- Make sure the Root Directory is set correctly to avoid path issues
+
 ## Deployment to GCP
 
 1. Set up Cloud Run or App Engine
